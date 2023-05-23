@@ -115,6 +115,9 @@ impl Benchmarks {
 pub struct BuildConfigurationFlags {
     /// If true, repository shall be cleaned at the build start.
     ///
+    /// Limit the amount of parallelism that is allowed. 
+    /// If set to zero returns to old default behavior (no limit).
+    pub max_cores:                    usize,
     /// Makes sense given that incremental builds with SBT are currently broken.
     pub test_scala:                    bool,
     /// Whether the Enso standard library should be tested.
@@ -206,6 +209,7 @@ impl BuildConfigurationFlags {
 impl Default for BuildConfigurationFlags {
     fn default() -> Self {
         Self {
+            max_cores: 0,
             test_scala:                    false,
             test_standard_library:         false,
             build_benchmarks:              false,

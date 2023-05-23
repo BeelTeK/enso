@@ -41,6 +41,19 @@ impl Sbt {
         }
         ret
     }
+
+    /// Format a string with a command that will execute all the given tasks concurrently with a maximum number of cores defined by chunk_size.
+    pub fn concurrent_tasks_chunked(tasks: &Vec<&str>, mut chunk_size : usize) -> Vec<String> {
+        let mut ret = Vec::new();
+        if chunk_size == 0 {
+            chunk_size = tasks.len();
+        }
+        let chunks = tasks.chunks(chunk_size);
+        for chunk in chunks {
+            ret.push(Self::concurrent_tasks(chunk));
+        }
+        ret
+    }
 }
 
 #[derive(Clone, Debug)]

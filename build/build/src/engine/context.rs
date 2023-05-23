@@ -324,8 +324,12 @@ impl RunContext {
 
             tasks.extend(self.config.execute_benchmarks.iter().flat_map(|b| b.sbt_task()));
             if !tasks.is_empty() {
-                let build_stuff = Sbt::concurrent_tasks(tasks);
-                sbt.call_arg(build_stuff).await?;
+                let build_stuff_chunked = Sbt::concurrent_tasks_chunked(&tasks, 1);
+                // TODO: Expose the max_cores parameter as a commandline argument.
+                // let build_stuff_chunked = Sbt::concurrent_tasks_chunked(&tasks, self.config.max_cores);
+                for build_stuff in build_stuff_chunked {
+                    sbt.call_arg(build_stuff).await?;
+                }
             } else {
                 debug!("No SBT tasks to run.");
             }
